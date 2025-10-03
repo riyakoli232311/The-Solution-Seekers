@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gate Access Verification - Campus Access Control</title>
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<script type="module" src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fcampusacc6596back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.8"></script>
+</head>
+<body class="bg-background min-h-screen">
+    <!-- Navigation Header -->
+    <nav class="bg-surface shadow-institutional border-b border-secondary-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo and Brand -->
+                <div class="flex items-center space-x-3">
+                    <div class="flex-shrink-0">
+                        <svg class="h-8 w-8 text-primary" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-10-5z"/>
+                            <path d="M10 17l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" fill="white"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-semibold text-text-primary">Campus Access Control</h1>
+                        <p class="text-sm text-text-secondary">Gate Verification System</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Links -->
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="gate_access_verification.html" class="bg-primary text-white px-3 py-2 rounded-md text-sm font-medium">
+                            Gate Access
+                        </a>
+                        <a href="access_logs_monitor.html" class="text-text-secondary hover:text-text-primary px-3 py-2 rounded-md text-sm font-medium transition-smooth">
+                            Access Logs
+                        </a>
+                        <a href="database_management.html" class="text-text-secondary hover:text-text-primary px-3 py-2 rounded-md text-sm font-medium transition-smooth">
+                            Database
+                        </a>
+                        <a href="security_dashboard.html" class="text-text-secondary hover:text-text-primary px-3 py-2 rounded-md text-sm font-medium transition-smooth">
+                            Dashboard
+                        </a>
+                        <a href="system_login.html" class="text-text-secondary hover:text-text-primary px-3 py-2 rounded-md text-sm font-medium transition-smooth">
+                            Logout
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button type="button" class="text-text-secondary hover:text-text-primary p-2 rounded-md" onclick="toggleMobileMenu()">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-menu" class="md:hidden hidden border-t border-secondary-200">
+            <div class="px-2 pt-2 pb-3 space-y-1 bg-surface">
+                <a href="gate_access_verification.html" class="bg-primary text-white block px-3 py-2 rounded-md text-base font-medium">
+                    Gate Access
+                </a>
+                <a href="access_logs_monitor.html" class="text-text-secondary hover:text-text-primary block px-3 py-2 rounded-md text-base font-medium">
+                    Access Logs
+                </a>
+                <a href="database_management.html" class="text-text-secondary hover:text-text-primary block px-3 py-2 rounded-md text-base font-medium">
+                    Database
+                </a>
+                <a href="security_dashboard.html" class="text-text-secondary hover:text-text-primary block px-3 py-2 rounded-md text-base font-medium">
+                    Dashboard
+                </a>
+                <a href="system_login.html" class="text-text-secondary hover:text-text-primary block px-3 py-2 rounded-md text-base font-medium">
+                    Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-text-primary">Gate Access Verification</h2>
+            <p class="mt-2 text-text-secondary">Upload vehicle image and verify access permissions</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Left Column - Upload and Input -->
+            <div class="space-y-6">
+                <!-- Vehicle Image Upload -->
+                <div class="card">
+                    <h3 class="text-lg font-semibold text-text-primary mb-4">Vehicle Image Upload</h3>
+                    <div id="upload-zone" class="border-2 border-dashed border-secondary-300 rounded-lg p-8 text-center hover:border-primary transition-smooth cursor-pointer" onclick="document.getElementById('file-input').click()">
+                        <div id="upload-content">
+                            <svg class="mx-auto h-12 w-12 text-secondary-400 mb-4" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <p class="text-lg font-medium text-text-primary mb-2">Drop vehicle image here</p>
+                            <p class="text-text-secondary mb-4">or click to browse files</p>
+                            <p class="text-sm text-text-secondary">Supports JPG, PNG, WEBP up to 10MB</p>
+                        </div>
+                        <div id="upload-preview" class="hidden">
+                            <img id="preview-image" class="mx-auto max-h-64 rounded-lg shadow-md" alt="Vehicle preview" />
+                            <p class="mt-4 text-sm text-text-secondary">Image uploaded successfully</p>
+                        </div>
+                        <div id="upload-processing" class="hidden">
+                            <div class="animate-spin mx-auto h-8 w-8 border-4 border-primary border-t-transparent rounded-full mb-4"></div>
+                            <p class="text-primary font-medium">Processing image...</p>
+                        </div>
+                    </div>
+                    <input type="file" id="file-input" class="hidden" accept="image/*" onchange="handleFileUpload(event)" />
+                </div>
+
+                <!-- Student/Staff ID Input -->
+                <div class="card">
+                    <h3 class="text-lg font-semibold text-text-primary mb-4">Student/Staff ID</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="student-id" class="block text-sm font-medium text-text-primary mb-2">Enter ID Number</label>
+                            <input type="text" id="student-id" class="input-field font-data" placeholder="e.g., STU2024001 or STF2024001" maxlength="12" oninput="validateIdFormat(this)" />
+                            <p class="mt-1 text-sm text-text-secondary">Format: STU/STF + Year + 3-digit number</p>
+                        </div>
+                        <div id="id-validation" class="hidden">
+                            <div class="flex items-center space-x-2">
+                                <svg class="h-4 w-4 text-success" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                </svg>
+                                <span class="text-sm text-success font-medium">Valid ID format</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="card">
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button id="verify-btn" class="btn-primary flex-1 py-3 text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed" onclick="processVerification()" disabled>
+                            <svg class="inline-block w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            Process Verification
+                        </button>
+                        <button class="btn-secondary py-3 px-6" onclick="clearForm()">
+                            <svg class="inline-block w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"/>
+                            </svg>
+                            Clear Form
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Results and Status -->
+            <div class="space-y-6">
+                <!-- Processing Status -->
+                <div id="status-card" class="card hidden">
+                    <h3 class="text-lg font-semibold text-text-primary mb-4">Processing Status</h3>
+                    <div id="status-content" class="text-center py-8">
+                        <div class="animate-spin mx-auto h-12 w-12 border-4 border-primary border-t-transparent rounded-full mb-4"></div>
+                        <p class="text-primary font-medium text-lg">Analyzing vehicle image...</p>
+                        <p class="text-text-secondary mt-2">Detecting license plate and verifying database</p>
+                    </div>
+                </div>
+
+                <!-- Access Decision Results -->
+                <div id="results-card" class="card hidden">
+                    <h3 class="text-lg font-semibold text-text-primary mb-4">Access Decision</h3>
+                    <div id="access-granted" class="hidden text-center py-8">
+                        <div class="mx-auto w-16 h-16 bg-success-100 rounded-full flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-success" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <h4 class="text-2xl font-bold text-success mb-2">ACCESS GRANTED</h4>
+                        <p class="text-text-secondary">Vehicle authorized for campus entry</p>
+                    </div>
+                    <div id="access-denied" class="hidden text-center py-8">
+                        <div class="mx-auto w-16 h-16 bg-error-100 rounded-full flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-error" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <h4 class="text-2xl font-bold text-error mb-2">ACCESS DENIED</h4>
+                        <p class="text-text-secondary">Vehicle not authorized for campus entry</p>
+                    </div>
+                </div>
+
+                <!-- Detailed Results Panel -->
+                <div id="details-card" class="card hidden">
+                    <h3 class="text-lg font-semibold text-text-primary mb-4">Verification Details</h3>
+                    <div class="space-y-4">
+                        <div class="bg-secondary-50 p-4 rounded-lg">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-text-secondary mb-1">Detected License Plate</label>
+                                    <p id="detected-plate" class="font-data text-lg font-semibold text-text-primary">ABC-1234</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-text-secondary mb-1">Vehicle Owner</label>
+                                    <p id="vehicle-owner" class="text-lg font-semibold text-text-primary">John Smith</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-text-secondary mb-1">Student/Staff ID</label>
+                                    <p id="owner-id" class="font-data text-lg font-semibold text-text-primary">STU2024001</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-text-secondary mb-1">Verification Time</label>
+                                    <p id="verification-time" class="text-lg font-semibold text-text-primary">10/03/2025 7:40 PM</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Manual Override Controls -->
+                <div id="override-card" class="card hidden">
+                    <h3 class="text-lg font-semibold text-text-primary mb-4">Manual Override</h3>
+                    <div class="space-y-4">
+                        <div class="bg-warning-50 border border-warning-200 p-4 rounded-lg">
+                            <div class="flex items-start space-x-3">
+                                <svg class="w-5 h-5 text-warning-600 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                </svg>
+                                <div>
+                                    <p class="text-sm font-medium text-warning-700">License plate detection failed</p>
+                                    <p class="text-sm text-warning-600 mt-1">Please manually enter the license plate number</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="manual-plate" class="block text-sm font-medium text-text-primary mb-2">License Plate Number</label>
+                            <input type="text" id="manual-plate" class="input-field font-data" placeholder="e.g., ABC-1234" maxlength="10" style="text-transform: uppercase;" />
+                        </div>
+                        <button class="btn-accent w-full py-3" onclick="submitManualOverride()">
+                            <svg class="inline-block w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            Submit Manual Verification
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- JavaScript -->
+    <script>
+        // Mock database for demonstration
+        const mockDatabase = {
+            'ABC-1234': { owner: 'John Smith', id: 'STU2024001', status: 'active' },
+            'XYZ-5678': { owner: 'Sarah Johnson', id: 'STF2024001', status: 'active' },
+            'DEF-9012': { owner: 'Mike Wilson', id: 'STU2024002', status: 'suspended' },
+            'GHI-3456': { owner: 'Emily Davis', id: 'STF2024002', status: 'active' }
+        };
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Validate file type and size
+            const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+            if (!validTypes.includes(file.type)) {
+                alert('Please upload a valid image file (JPG, PNG, WEBP)');
+                return;
+            }
+
+            if (file.size > 10 * 1024 * 1024) {
+                alert('File size must be less than 10MB');
+                return;
+            }
+
+            // Show preview
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('preview-image').src = e.target.result;
+                document.getElementById('upload-content').classList.add('hidden');
+                document.getElementById('upload-preview').classList.remove('hidden');
+                checkFormValidity();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function validateIdFormat(input) {
+            const value = input.value.toUpperCase();
+            input.value = value;
+            
+            const pattern = /^(STU|STF)\d{7}$/;
+            const validation = document.getElementById('id-validation');
+            
+            if (pattern.test(value)) {
+                validation.classList.remove('hidden');
+                input.classList.remove('border-error-500');
+                input.classList.add('border-success-500');
+            } else {
+                validation.classList.add('hidden');
+                input.classList.remove('border-success-500');
+                if (value.length > 0) {
+                    input.classList.add('border-error-500');
+                }
+            }
+            
+            checkFormValidity();
+        }
+
+        function checkFormValidity() {
+            const hasImage = !document.getElementById('upload-preview').classList.contains('hidden');
+            const hasValidId = !document.getElementById('id-validation').classList.contains('hidden');
+            const verifyBtn = document.getElementById('verify-btn');
+            
+            verifyBtn.disabled = !(hasImage && hasValidId);
+        }
+
+        function processVerification() {
+            // Show processing status
+            document.getElementById('status-card').classList.remove('hidden');
+            document.getElementById('results-card').classList.add('hidden');
+            document.getElementById('details-card').classList.add('hidden');
+            document.getElementById('override-card').classList.add('hidden');
+
+            // Simulate processing delay
+            setTimeout(() => {
+                // Mock license plate detection (80% success rate)
+                const detectionSuccess = Math.random() > 0.2;
+                
+                if (detectionSuccess) {
+                    // Simulate detected plate
+                    const plates = Object.keys(mockDatabase);
+                    const detectedPlate = plates[Math.floor(Math.random() * plates.length)];
+                    showVerificationResults(detectedPlate);
+                } else {
+                    // Show manual override
+                    document.getElementById('status-card').classList.add('hidden');
+                    document.getElementById('override-card').classList.remove('hidden');
+                }
+            }, 3000);
+        }
+
+        function showVerificationResults(plateNumber) {
+            const vehicleData = mockDatabase[plateNumber];
+            const currentTime = new Date().toLocaleString('en-US', {
+                month: '2-digit',
+                day: '2-digit',
+                year: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
+            });
+
+            // Hide status card
+            document.getElementById('status-card').classList.add('hidden');
+
+            // Show results
+            document.getElementById('results-card').classList.remove('hidden');
+            document.getElementById('details-card').classList.remove('hidden');
+
+            // Update details
+            document.getElementById('detected-plate').textContent = plateNumber;
+            document.getElementById('vehicle-owner').textContent = vehicleData.owner;
+            document.getElementById('owner-id').textContent = vehicleData.id;
+            document.getElementById('verification-time').textContent = currentTime;
+
+            // Show access decision
+            if (vehicleData.status === 'active') {
+                document.getElementById('access-granted').classList.remove('hidden');
+                document.getElementById('access-denied').classList.add('hidden');
+            } else {
+                document.getElementById('access-granted').classList.add('hidden');
+                document.getElementById('access-denied').classList.remove('hidden');
+            }
+
+            // Log the access attempt (in real app, this would be sent to server)
+            console.log('Access attempt logged:', {
+                timestamp: currentTime,
+                plateNumber: plateNumber,
+                studentId: document.getElementById('student-id').value,
+                status: vehicleData.status === 'active' ? 'GRANTED' : 'DENIED'
+            });
+        }
+
+        function submitManualOverride() {
+            const manualPlate = document.getElementById('manual-plate').value.toUpperCase();
+            if (!manualPlate) {
+                alert('Please enter a license plate number');
+                return;
+            }
+
+            document.getElementById('override-card').classList.add('hidden');
+            document.getElementById('status-card').classList.remove('hidden');
+
+            setTimeout(() => {
+                showVerificationResults(manualPlate);
+            }, 2000);
+        }
+
+        function clearForm() {
+            // Reset file input
+            document.getElementById('file-input').value = '';
+            document.getElementById('upload-content').classList.remove('hidden');
+            document.getElementById('upload-preview').classList.add('hidden');
+            
+            // Reset ID input
+            document.getElementById('student-id').value = '';
+            document.getElementById('id-validation').classList.add('hidden');
+            document.getElementById('student-id').classList.remove('border-success-500', 'border-error-500');
+            
+            // Reset manual override
+            document.getElementById('manual-plate').value = '';
+            
+            // Hide all result cards
+            document.getElementById('status-card').classList.add('hidden');
+            document.getElementById('results-card').classList.add('hidden');
+            document.getElementById('details-card').classList.add('hidden');
+            document.getElementById('override-card').classList.add('hidden');
+            
+            // Disable verify button
+            document.getElementById('verify-btn').disabled = true;
+        }
+
+        // Drag and drop functionality
+        const uploadZone = document.getElementById('upload-zone');
+
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('border-primary', 'bg-primary-50');
+        });
+
+        uploadZone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('border-primary', 'bg-primary-50');
+        });
+
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('border-primary', 'bg-primary-50');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                document.getElementById('file-input').files = files;
+                handleFileUpload({ target: { files: files } });
+            }
+        });
+    </script>
+<script id="dhws-dataInjector" src="../public/dhws-data-injector.js"></script>
+</body>
+</html>

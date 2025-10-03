@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>System Login - Campus Access Control</title>
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<script type="module" src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fcampusacc6596back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.8"></script>
+</head>
+<body class="bg-background min-h-screen flex items-center justify-center">
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 opacity-5">
+        <svg class="w-full h-full" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
+                    <path d="M 10 0 L 0 0 0 10" fill="none" stroke="currentColor" stroke-width="0.5"/>
+                </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid)" class="text-primary"/>
+        </svg>
+    </div>
+
+    <!-- Login Container -->
+    <div class="relative w-full max-w-md mx-auto px-4">
+        <!-- Security Badge -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-primary rounded-full shadow-elevated mb-4">
+                <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-10-5z"/>
+                    <path d="M10 17l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" fill="white"/>
+                </svg>
+            </div>
+            <h1 class="text-2xl font-bold text-text-primary mb-2">Campus Access Control</h1>
+            <p class="text-text-secondary">Secure Vehicle Verification System</p>
+        </div>
+
+        <!-- Login Form Card -->
+        <div class="card shadow-elevated">
+            <div class="text-center mb-6">
+                <h2 class="text-xl font-semibold text-text-primary mb-2">System Login</h2>
+                <p class="text-text-secondary text-sm">Enter your credentials to access the security system</p>
+            </div>
+
+            <!-- Error Message -->
+            <div id="error-message" class="hidden mb-4 p-3 bg-error-50 border border-error-200 rounded-md">
+                <div class="flex items-center space-x-2">
+                    <svg class="w-4 h-4 text-error-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                    </svg>
+                    <span id="error-text" class="text-sm text-error-700 font-medium"></span>
+                </div>
+            </div>
+
+            <!-- Login Form -->
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <!-- Username Field -->
+                <div class="mb-4">
+                    <label for="username" class="block text-sm font-medium text-text-primary mb-2">
+                        Username
+                    </label>
+                    <div class="relative">
+                        <input type="text" id="username" name="username" class="input-field pl-10" placeholder="Enter your username" required autocomplete="username" />
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-secondary-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Password Field -->
+                <div class="mb-4">
+                    <label for="password" class="block text-sm font-medium text-text-primary mb-2">
+                        Password
+                    </label>
+                    <div class="relative">
+                        <input type="password" id="password" name="password" class="input-field pl-10 pr-10" placeholder="Enter your password" required autocomplete="current-password" />
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-secondary-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center" onclick="togglePasswordVisibility()">
+                            <svg id="password-hide-icon" class="h-5 w-5 text-secondary-400 hover:text-secondary-600 transition-smooth" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074l-1.78-1.781zm4.261 4.26l1.514 1.515a2.003 2.003 0 012.45 2.45l1.514 1.514a4 4 0 00-5.478-5.478z" clip-rule="evenodd"/>
+                                <path d="M12.454 16.697L9.75 13.992a4 4 0 01-3.742-3.741L2.335 6.578A9.98 9.98 0 00.458 10c1.274 4.057 5.065 7 9.542 7 .847 0 1.669-.105 2.454-.303z"/>
+                            </svg>
+                            <svg id="password-show-icon" class="hidden h-5 w-5 text-secondary-400 hover:text-secondary-600 transition-smooth" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+                                <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Remember Me & Forgot Password -->
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center">
+                        <input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 text-primary focus:ring-primary-500 border-secondary-300 rounded" />
+                        <label for="remember-me" class="ml-2 block text-sm text-text-secondary">
+                            Remember me
+                        </label>
+                    </div>
+                    <div class="text-sm">
+                        <a href="javascript:void(0)" onclick="showForgotPassword()" class="font-medium text-primary hover:text-primary-700 transition-smooth">
+                            Forgot password?
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Login Button -->
+                <button type="submit" id="login-button" class="btn-primary w-full py-3 text-lg font-semibold relative">
+                    <span id="login-text">Sign In</span>
+                    <div id="login-spinner" class="hidden absolute inset-0 flex items-center justify-center">
+                        <div class="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></div>
+                    </div>
+                </button>
+            </form>
+
+            <!-- Demo Credentials -->
+            <div class="mt-6 p-4 bg-secondary-50 rounded-md border border-secondary-200">
+                <h4 class="text-sm font-medium text-text-primary mb-2">Demo Credentials:</h4>
+                <div class="space-y-1 text-sm text-text-secondary font-data">
+                    <div class="flex justify-between">
+                        <span>Admin:</span>
+                        <span>admin / admin123</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Security:</span>
+                        <span>security / security2024</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Staff:</span>
+                        <span>staff / staff2025</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Security Indicators -->
+        <div class="mt-8 text-center">
+            <div class="flex items-center justify-center space-x-4 mb-4">
+                <!-- SSL Badge -->
+                <div class="flex items-center space-x-2 bg-surface px-3 py-2 rounded-md shadow-institutional border border-secondary-200">
+                    <svg class="w-4 h-4 text-success" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
+                    </svg>
+                    <span class="text-xs font-medium text-success">SSL Secured</span>
+                </div>
+
+                <!-- Campus Security Badge -->
+                <div class="flex items-center space-x-2 bg-surface px-3 py-2 rounded-md shadow-institutional border border-secondary-200">
+                    <svg class="w-4 h-4 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span class="text-xs font-medium text-primary">Campus Certified</span>
+                </div>
+            </div>
+
+            <p class="text-xs text-text-secondary">
+                © 2025 Campus Access Control System. All Rights Reserved.
+            </p>
+            <p class="text-xs text-text-secondary mt-1">
+                Unauthorized access is prohibited and monitored.
+            </p>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div id="forgot-password-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-surface rounded-lg shadow-floating max-w-md w-full mx-4 p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-text-primary">Reset Password</h3>
+                <button onclick="closeForgotPassword()" class="text-secondary-400 hover:text-secondary-600 transition-smooth">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                    </svg>
+                </button>
+            </div>
+            <p class="text-text-secondary mb-4">Enter your username to receive password reset instructions.</p>
+            <form onsubmit="handlePasswordReset(event)">
+                <div class="mb-4">
+                    <label for="reset-username" class="block text-sm font-medium text-text-primary mb-2">Username</label>
+                    <input type="text" id="reset-username" class="input-field" placeholder="Enter your username" required />
+                </div>
+                <div class="flex space-x-3">
+                    <button type="submit" class="btn-primary flex-1">Send Reset Link</button>
+                    <button type="button" onclick="closeForgotPassword()" class="btn-secondary">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Session Timeout Warning -->
+    <div id="session-warning" class="hidden fixed top-4 right-4 bg-warning-50 border border-warning-200 rounded-lg p-4 shadow-elevated max-w-sm">
+        <div class="flex items-start space-x-3">
+            <svg class="w-5 h-5 text-warning-600 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+            </svg>
+            <div>
+                <h4 class="text-sm font-medium text-warning-700">Session Timeout Warning</h4>
+                <p class="text-sm text-warning-600 mt-1">Your session will expire in 5 minutes due to inactivity.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Mock user database
+        const users = {
+            'admin': { password: 'admin123', role: 'administrator', name: 'System Administrator' },
+            'security': { password: 'security2024', role: 'security', name: 'Security Officer' },
+            'staff': { password: 'staff2025', role: 'staff', name: 'Campus Staff' }
+        };
+
+        let loginAttempts = 0;
+        const maxAttempts = 3;
+
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const rememberMe = document.getElementById('remember-me').checked;
+
+            // Clear previous errors
+            hideError();
+
+            // Validate inputs
+            if (!username || !password) {
+                showError('Please enter both username and password.');
+                return;
+            }
+
+            // Show loading state
+            showLoadingState();
+
+            // Simulate authentication delay
+            setTimeout(() => {
+                authenticateUser(username, password, rememberMe);
+            }, 1500);
+        }
+
+        function authenticateUser(username, password, rememberMe) {
+            const user = users[username.toLowerCase()];
+
+            if (!user || user.password !== password) {
+                loginAttempts++;
+                hideLoadingState();
+
+                if (loginAttempts >= maxAttempts) {
+                    showError(`Account temporarily locked. Too many failed attempts. Please contact system administrator.`);
+                    document.getElementById('login-button').disabled = true;
+                    setTimeout(() => {
+                        document.getElementById('login-button').disabled = false;
+                        loginAttempts = 0;
+                    }, 30000); // 30 second lockout
+                } else {
+                    showError(`Invalid credentials. ${maxAttempts - loginAttempts} attempts remaining.`);
+                }
+                return;
+            }
+
+            // Successful login
+            loginAttempts = 0;
+            
+            // Store session data
+            const sessionData = {
+                username: username,
+                role: user.role,
+                name: user.name,
+                loginTime: new Date().toISOString(),
+                rememberMe: rememberMe
+            };
+
+            if (rememberMe) {
+                localStorage.setItem('campusAccessSession', JSON.stringify(sessionData));
+            } else {
+                sessionStorage.setItem('campusAccessSession', JSON.stringify(sessionData));
+            }
+
+            // Show success and redirect
+            showSuccessState();
+            
+            setTimeout(() => {
+                // Redirect based on role
+                switch (user.role) {
+                    case 'administrator':
+                        window.location.href = 'security_dashboard.html';
+                        break;
+                    case 'security':
+                        window.location.href = 'gate_access_verification.html';
+                        break;
+                    case 'staff':
+                        window.location.href = 'access_logs_monitor.html';
+                        break;
+                    default:
+                        window.location.href = 'security_dashboard.html';
+                }
+            }, 1000);
+        }
+
+        function showLoadingState() {
+            const button = document.getElementById('login-button');
+            const text = document.getElementById('login-text');
+            const spinner = document.getElementById('login-spinner');
+            
+            button.disabled = true;
+            text.classList.add('opacity-0');
+            spinner.classList.remove('hidden');
+        }
+
+        function hideLoadingState() {
+            const button = document.getElementById('login-button');
+            const text = document.getElementById('login-text');
+            const spinner = document.getElementById('login-spinner');
+            
+            button.disabled = false;
+            text.classList.remove('opacity-0');
+            spinner.classList.add('hidden');
+        }
+
+        function showSuccessState() {
+            const button = document.getElementById('login-button');
+            const text = document.getElementById('login-text');
+            const spinner = document.getElementById('login-spinner');
+            
+            spinner.classList.add('hidden');
+            text.classList.remove('opacity-0');
+            text.textContent = 'Login Successful!';
+            button.classList.remove('btn-primary');
+            button.classList.add('bg-success', 'text-white');
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            const errorText = document.getElementById('error-text');
+            
+            errorText.textContent = message;
+            errorDiv.classList.remove('hidden');
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                hideError();
+            }, 5000);
+        }
+
+        function hideError() {
+            document.getElementById('error-message').classList.add('hidden');
+        }
+
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('password');
+            const hideIcon = document.getElementById('password-hide-icon');
+            const showIcon = document.getElementById('password-show-icon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                hideIcon.classList.add('hidden');
+                showIcon.classList.remove('hidden');
+            } else {
+                passwordInput.type = 'password';
+                hideIcon.classList.remove('hidden');
+                showIcon.classList.add('hidden');
+            }
+        }
+
+        function showForgotPassword() {
+            document.getElementById('forgot-password-modal').classList.remove('hidden');
+        }
+
+        function closeForgotPassword() {
+            document.getElementById('forgot-password-modal').classList.add('hidden');
+            document.getElementById('reset-username').value = '';
+        }
+
+        function handlePasswordReset(event) {
+            event.preventDefault();
+            const username = document.getElementById('reset-username').value.trim();
+            
+            if (!username) {
+                alert('Please enter your username.');
+                return;
+            }
+
+            // Simulate password reset
+            alert(`Password reset instructions have been sent to the email associated with username: ${username}`);
+            closeForgotPassword();
+        }
+
+        // Check for existing session on page load
+        window.addEventListener('load', () => {
+            const sessionData = localStorage.getItem('campusAccessSession') || sessionStorage.getItem('campusAccessSession');
+            
+            if (sessionData) {
+                try {
+                    const session = JSON.parse(sessionData);
+                    const loginTime = new Date(session.loginTime);
+                    const now = new Date();
+                    const hoursSinceLogin = (now - loginTime) / (1000 * 60 * 60);
+                    
+                    // Auto-login if session is less than 24 hours old (or 1 hour for session storage)
+                    const maxHours = session.rememberMe ? 24 : 1;
+                    
+                    if (hoursSinceLogin < maxHours) {
+                        // Redirect to appropriate page based on role
+                        switch (session.role) {
+                            case 'administrator':
+                                window.location.href = 'security_dashboard.html';
+                                break;
+                            case 'security':
+                                window.location.href = 'gate_access_verification.html';
+                                break;
+                            case 'staff':
+                                window.location.href = 'access_logs_monitor.html';
+                                break;
+                            default:
+                                window.location.href = 'security_dashboard.html';
+                        }
+                        return;
+                    }
+                } catch (e) {
+                    // Invalid session data, clear it
+                    localStorage.removeItem('campusAccessSession');
+                    sessionStorage.removeItem('campusAccessSession');
+                }
+            }
+        });
+
+        // Simulate session timeout warning (for demo purposes)
+        setTimeout(() => {
+            if (window.location.pathname.includes('system_login.html')) {
+                document.getElementById('session-warning').classList.remove('hidden');
+                setTimeout(() => {
+                    document.getElementById('session-warning').classList.add('hidden');
+                }, 10000);
+            }
+        }, 30000);
+
+        // Handle Enter key in form fields
+        document.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && (e.target.id === 'username' || e.target.id === 'password')) {
+                document.getElementById('login-form').dispatchEvent(new Event('submit'));
+            }
+        });
+
+        // Close modal on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeForgotPassword();
+            }
+        });
+
+        // Close modal on backdrop click
+        document.getElementById('forgot-password-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'forgot-password-modal') {
+                closeForgotPassword();
+            }
+        });
+    </script>
+<script id="dhws-dataInjector" src="../public/dhws-data-injector.js"></script>
+</body>
+</html>

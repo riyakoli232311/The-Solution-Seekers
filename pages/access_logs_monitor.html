@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Access Logs Monitor - Campus Access Control</title>
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<script type="module" src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fcampusacc6596back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.8"></script>
+</head>
+<body class="bg-background min-h-screen">
+    <!-- Navigation Header -->
+    <nav class="bg-surface shadow-institutional border-b border-secondary-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo and Brand -->
+                <div class="flex items-center space-x-3">
+                    <div class="flex-shrink-0">
+                        <svg class="h-8 w-8 text-primary" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-10-5z"/>
+                            <path d="M10 17l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" fill="white"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-semibold text-text-primary">Campus Access Control</h1>
+                        <p class="text-sm text-text-secondary">Access Logs Monitor</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Links -->
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="gate_access_verification.html" class="text-text-secondary hover:text-text-primary px-3 py-2 rounded-md text-sm font-medium transition-smooth">
+                            Gate Access
+                        </a>
+                        <a href="access_logs_monitor.html" class="bg-primary text-white px-3 py-2 rounded-md text-sm font-medium">
+                            Access Logs
+                        </a>
+                        <a href="database_management.html" class="text-text-secondary hover:text-text-primary px-3 py-2 rounded-md text-sm font-medium transition-smooth">
+                            Database
+                        </a>
+                        <a href="security_dashboard.html" class="text-text-secondary hover:text-text-primary px-3 py-2 rounded-md text-sm font-medium transition-smooth">
+                            Dashboard
+                        </a>
+                        <a href="system_login.html" class="text-text-secondary hover:text-text-primary px-3 py-2 rounded-md text-sm font-medium transition-smooth">
+                            Logout
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button type="button" class="text-text-secondary hover:text-text-primary p-2 rounded-md" onclick="toggleMobileMenu()">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-menu" class="md:hidden hidden border-t border-secondary-200">
+            <div class="px-2 pt-2 pb-3 space-y-1 bg-surface">
+                <a href="gate_access_verification.html" class="text-text-secondary hover:text-text-primary block px-3 py-2 rounded-md text-base font-medium">
+                    Gate Access
+                </a>
+                <a href="access_logs_monitor.html" class="bg-primary text-white block px-3 py-2 rounded-md text-base font-medium">
+                    Access Logs
+                </a>
+                <a href="database_management.html" class="text-text-secondary hover:text-text-primary block px-3 py-2 rounded-md text-base font-medium">
+                    Database
+                </a>
+                <a href="security_dashboard.html" class="text-text-secondary hover:text-text-primary block px-3 py-2 rounded-md text-base font-medium">
+                    Dashboard
+                </a>
+                <a href="system_login.html" class="text-text-secondary hover:text-text-primary block px-3 py-2 rounded-md text-base font-medium">
+                    Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-text-primary">Access Logs Monitor</h2>
+            <p class="mt-2 text-text-secondary">Review vehicle access history and generate comprehensive reports</p>
+        </div>
+
+        <!-- Summary Metrics Panel -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="card">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-8 h-8 bg-primary-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-text-secondary">Total Access Attempts</p>
+                        <p class="text-2xl font-bold text-text-primary" id="total-attempts">247</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-8 h-8 bg-success-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-5 h-5 text-success" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-text-secondary">Access Granted</p>
+                        <p class="text-2xl font-bold text-success" id="granted-count">198</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-8 h-8 bg-error-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-5 h-5 text-error" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-text-secondary">Access Denied</p>
+                        <p class="text-2xl font-bold text-error" id="denied-count">49</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-8 h-8 bg-accent-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-5 h-5 text-accent" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-text-secondary">Peak Hour</p>
+                        <p class="text-2xl font-bold text-text-primary" id="peak-hour">8:00 AM</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Controls -->
+        <div class="card mb-8">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0 lg:space-x-4">
+                <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 flex-1">
+                    <!-- Date Range Picker -->
+                    <div class="flex-1 min-w-0">
+                        <label for="date-from" class="block text-sm font-medium text-text-primary mb-2">Date Range</label>
+                        <div class="flex space-x-2">
+                            <input type="date" id="date-from" class="input-field text-sm" value="2025-10-01" onchange="filterLogs()" />
+                            <span class="flex items-center text-text-secondary">to</span>
+                            <input type="date" id="date-to" class="input-field text-sm" value="2025-10-03" onchange="filterLogs()" />
+                        </div>
+                    </div>
+
+                    <!-- Access Status Filter -->
+                    <div class="flex-1 min-w-0">
+                        <label for="status-filter" class="block text-sm font-medium text-text-primary mb-2">Access Status</label>
+                        <select id="status-filter" class="input-field text-sm" onchange="filterLogs()">
+                            <option value>All Status</option>
+                            <option value="GRANTED">Access Granted</option>
+                            <option value="DENIED">Access Denied</option>
+                        </select>
+                    </div>
+
+                    <!-- Search Field -->
+                    <div class="flex-1 min-w-0">
+                        <label for="search-field" class="block text-sm font-medium text-text-primary mb-2">Search</label>
+                        <div class="relative">
+                            <input type="text" id="search-field" class="input-field text-sm pl-10" placeholder="License plate or ID..." oninput="filterLogs()" />
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg class="h-4 w-4 text-text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex space-x-3">
+                    <button class="btn-secondary" onclick="clearFilters()">
+                        <svg class="inline-block w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"/>
+                        </svg>
+                        Clear
+                    </button>
+                    <button class="btn-accent" onclick="exportLogs()">
+                        <svg class="inline-block w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                        </svg>
+                        Export CSV
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Access Logs Table -->
+        <div class="card">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-semibold text-text-primary">Access History</h3>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-text-secondary" id="results-count">Showing 1-10 of 247 results</span>
+                    <select id="page-size" class="input-field text-sm" onchange="changePageSize()">
+                        <option value="10">10 per page</option>
+                        <option value="25">25 per page</option>
+                        <option value="50">50 per page</option>
+                        <option value="100">100 per page</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Desktop Table View -->
+            <div class="hidden md:block overflow-x-auto">
+                <table class="min-w-full divide-y divide-secondary-200">
+                    <thead class="bg-secondary-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider cursor-pointer hover:bg-secondary-100 transition-smooth" onclick="sortTable('timestamp')">
+                                <div class="flex items-center space-x-1">
+                                    <span>Timestamp</span>
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M5 12a1 1 0 102 0V6.414l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L5 6.414V12zM15 8a1 1 0 10-2 0v5.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L15 13.586V8z"/>
+                                    </svg>
+                                </div>
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider cursor-pointer hover:bg-secondary-100 transition-smooth" onclick="sortTable('plate')">
+                                <div class="flex items-center space-x-1">
+                                    <span>License Plate</span>
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M5 12a1 1 0 102 0V6.414l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L5 6.414V12zM15 8a1 1 0 10-2 0v5.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L15 13.586V8z"/>
+                                    </svg>
+                                </div>
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">Student/Staff ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">Vehicle Owner</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider cursor-pointer hover:bg-secondary-100 transition-smooth" onclick="sortTable('status')">
+                                <div class="flex items-center space-x-1">
+                                    <span>Access Status</span>
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M5 12a1 1 0 102 0V6.414l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L5 6.414V12zM15 8a1 1 0 10-2 0v5.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L15 13.586V8z"/>
+                                    </svg>
+                                </div>
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logs-table-body" class="bg-white divide-y divide-secondary-200">
+                        <!-- Table rows will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Mobile Card View -->
+            <div class="md:hidden space-y-4" id="mobile-logs">
+                <!-- Mobile cards will be populated by JavaScript -->
+            </div>
+
+            <!-- Pagination -->
+            <div class="flex items-center justify-between mt-6 pt-6 border-t border-secondary-200">
+                <div class="flex items-center space-x-2">
+                    <button id="prev-page" class="btn-secondary px-3 py-2 text-sm" onclick="changePage(-1)" disabled>
+                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                        Previous
+                    </button>
+                    <span class="text-sm text-text-secondary" id="page-info">Page 1 of 25</span>
+                    <button id="next-page" class="btn-secondary px-3 py-2 text-sm" onclick="changePage(1)">
+                        Next
+                        <svg class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="text-sm text-text-secondary">
+                    Total: <span id="total-records">247</span> records
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Detail Modal -->
+    <div id="detail-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50" onclick="closeDetailModal()">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg shadow-lg max-w-2xl w-full max-h-screen overflow-y-auto" onclick="event.stopPropagation()">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-semibold text-text-primary">Access Log Details</h3>
+                        <button class="text-text-secondary hover:text-text-primary" onclick="closeDetailModal()">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div id="modal-content" class="space-y-4">
+                        <!-- Modal content will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Mock access logs data
+        const mockAccessLogs = [
+            { id: 1, timestamp: '10/03/2025 7:35 PM', plate: 'ABC-1234', studentId: 'STU2024001', owner: 'John Smith', status: 'GRANTED' },
+            { id: 2, timestamp: '10/03/2025 7:28 PM', plate: 'XYZ-5678', studentId: 'STF2024001', owner: 'Sarah Johnson', status: 'GRANTED' },
+            { id: 3, timestamp: '10/03/2025 7:15 PM', plate: 'DEF-9012', studentId: 'STU2024002', owner: 'Mike Wilson', status: 'DENIED' },
+            { id: 4, timestamp: '10/03/2025 6:45 PM', plate: 'GHI-3456', studentId: 'STF2024002', owner: 'Emily Davis', status: 'GRANTED' },
+            { id: 5, timestamp: '10/03/2025 6:30 PM', plate: 'JKL-7890', studentId: 'STU2024003', owner: 'David Brown', status: 'DENIED' },
+            { id: 6, timestamp: '10/03/2025 5:55 PM', plate: 'MNO-2468', studentId: 'STF2024003', owner: 'Lisa Anderson', status: 'GRANTED' },
+            { id: 7, timestamp: '10/03/2025 5:20 PM', plate: 'PQR-1357', studentId: 'STU2024004', owner: 'Robert Taylor', status: 'GRANTED' },
+            { id: 8, timestamp: '10/03/2025 4:45 PM', plate: 'STU-9876', studentId: 'STF2024004', owner: 'Jennifer White', status: 'DENIED' },
+            { id: 9, timestamp: '10/03/2025 4:10 PM', plate: 'VWX-5432', studentId: 'STU2024005', owner: 'Michael Garcia', status: 'GRANTED' },
+            { id: 10, timestamp: '10/03/2025 3:35 PM', plate: 'YZA-8765', studentId: 'STF2024005', owner: 'Amanda Martinez', status: 'GRANTED' }
+        ];
+
+        let currentPage = 1;
+        let pageSize = 10;
+        let filteredLogs = [...mockAccessLogs];
+        let sortColumn = '';
+        let sortDirection = 'asc';
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        function renderTable() {
+            const tableBody = document.getElementById('logs-table-body');
+            const mobileContainer = document.getElementById('mobile-logs');
+            
+            const startIndex = (currentPage - 1) * pageSize;
+            const endIndex = startIndex + pageSize;
+            const pageData = filteredLogs.slice(startIndex, endIndex);
+
+            // Desktop table
+            tableBody.innerHTML = pageData.map(log => `
+                <tr class="table-row">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-text-primary">${log.timestamp}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-data font-semibold text-text-primary">${log.plate}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-data text-text-primary">${log.studentId}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-text-primary">${log.owner}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="${log.status === 'GRANTED' ? 'status-success' : 'status-error'}">
+                            ${log.status === 'GRANTED' ? 'ACCESS GRANTED' : 'ACCESS DENIED'}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        <button class="text-primary hover:text-primary-700 font-medium" onclick="showDetailModal(${log.id})">
+                            View Details
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Mobile cards
+            mobileContainer.innerHTML = pageData.map(log => `
+                <div class="card">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex-1">
+                            <p class="text-sm text-text-secondary">${log.timestamp}</p>
+                            <p class="font-data font-semibold text-lg text-text-primary">${log.plate}</p>
+                        </div>
+                        <span class="${log.status === 'GRANTED' ? 'status-success' : 'status-error'}">
+                            ${log.status === 'GRANTED' ? 'GRANTED' : 'DENIED'}
+                        </span>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex justify-between">
+                            <span class="text-sm text-text-secondary">Student/Staff ID:</span>
+                            <span class="text-sm font-data font-medium text-text-primary">${log.studentId}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-text-secondary">Vehicle Owner:</span>
+                            <span class="text-sm font-medium text-text-primary">${log.owner}</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-secondary-200">
+                        <button class="text-primary hover:text-primary-700 font-medium text-sm" onclick="showDetailModal(${log.id})">
+                            View Details →
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            updatePagination();
+            updateResultsCount();
+        }
+
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredLogs.length / pageSize);
+            document.getElementById('page-info').textContent = `Page ${currentPage} of ${totalPages}`;
+            document.getElementById('prev-page').disabled = currentPage === 1;
+            document.getElementById('next-page').disabled = currentPage === totalPages;
+        }
+
+        function updateResultsCount() {
+            const startIndex = (currentPage - 1) * pageSize + 1;
+            const endIndex = Math.min(currentPage * pageSize, filteredLogs.length);
+            document.getElementById('results-count').textContent = 
+                `Showing ${startIndex}-${endIndex} of ${filteredLogs.length} results`;
+            document.getElementById('total-records').textContent = filteredLogs.length;
+        }
+
+        function filterLogs() {
+            const dateFrom = document.getElementById('date-from').value;
+            const dateTo = document.getElementById('date-to').value;
+            const statusFilter = document.getElementById('status-filter').value;
+            const searchTerm = document.getElementById('search-field').value.toLowerCase();
+
+            filteredLogs = mockAccessLogs.filter(log => {
+                // Date filter (simplified for demo)
+                let dateMatch = true;
+                if (dateFrom || dateTo) {
+                    const logDate = new Date(log.timestamp);
+                    if (dateFrom) dateMatch = dateMatch && logDate >= new Date(dateFrom);
+                    if (dateTo) dateMatch = dateMatch && logDate <= new Date(dateTo + ' 23:59:59');
+                }
+
+                // Status filter
+                const statusMatch = !statusFilter || log.status === statusFilter;
+
+                // Search filter
+                const searchMatch = !searchTerm || 
+                    log.plate.toLowerCase().includes(searchTerm) ||
+                    log.studentId.toLowerCase().includes(searchTerm) ||
+                    log.owner.toLowerCase().includes(searchTerm);
+
+                return dateMatch && statusMatch && searchMatch;
+            });
+
+            currentPage = 1;
+            renderTable();
+        }
+
+        function clearFilters() {
+            document.getElementById('date-from').value = '2025-10-01';
+            document.getElementById('date-to').value = '2025-10-03';
+            document.getElementById('status-filter').value = '';
+            document.getElementById('search-field').value = '';
+            filteredLogs = [...mockAccessLogs];
+            currentPage = 1;
+            renderTable();
+        }
+
+        function sortTable(column) {
+            if (sortColumn === column) {
+                sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortColumn = column;
+                sortDirection = 'asc';
+            }
+
+            filteredLogs.sort((a, b) => {
+                let aVal = a[column];
+                let bVal = b[column];
+
+                if (column === 'timestamp') {
+                    aVal = new Date(aVal);
+                    bVal = new Date(bVal);
+                }
+
+                if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
+                if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
+                return 0;
+            });
+
+            renderTable();
+        }
+
+        function changePage(direction) {
+            const totalPages = Math.ceil(filteredLogs.length / pageSize);
+            const newPage = currentPage + direction;
+            
+            if (newPage >= 1 && newPage <= totalPages) {
+                currentPage = newPage;
+                renderTable();
+            }
+        }
+
+        function changePageSize() {
+            pageSize = parseInt(document.getElementById('page-size').value);
+            currentPage = 1;
+            renderTable();
+        }
+
+        function showDetailModal(logId) {
+            const log = mockAccessLogs.find(l => l.id === logId);
+            if (!log) return;
+
+            const modalContent = document.getElementById('modal-content');
+            modalContent.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-text-secondary mb-1">Timestamp</label>
+                            <p class="text-lg font-semibold text-text-primary">${log.timestamp}</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-text-secondary mb-1">License Plate</label>
+                            <p class="text-lg font-data font-bold text-text-primary">${log.plate}</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-text-secondary mb-1">Student/Staff ID</label>
+                            <p class="text-lg font-data font-semibold text-text-primary">${log.studentId}</p>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-text-secondary mb-1">Vehicle Owner</label>
+                            <p class="text-lg font-semibold text-text-primary">${log.owner}</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-text-secondary mb-1">Access Status</label>
+                            <span class="${log.status === 'GRANTED' ? 'status-success' : 'status-error'} text-lg">
+                                ${log.status === 'GRANTED' ? 'ACCESS GRANTED' : 'ACCESS DENIED'}
+                            </span>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-text-secondary mb-1">Processing Method</label>
+                            <p class="text-lg text-text-primary">Automatic Detection</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6 pt-6 border-t border-secondary-200">
+                    <div class="bg-secondary-50 p-4 rounded-lg">
+                        <h4 class="font-medium text-text-primary mb-2">Additional Information</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <span class="text-text-secondary">Detection Confidence:</span>
+                                <span class="text-text-primary font-medium ml-2">98.5%</span>
+                            </div>
+                            <div>
+                                <span class="text-text-secondary">Processing Time:</span>
+                                <span class="text-text-primary font-medium ml-2">2.3 seconds</span>
+                            </div>
+                            <div>
+                                <span class="text-text-secondary">Gate Location:</span>
+                                <span class="text-text-primary font-medium ml-2">Main Entrance</span>
+                            </div>
+                            <div>
+                                <span class="text-text-secondary">Security Officer:</span>
+                                <span class="text-text-primary font-medium ml-2">System Auto</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('detail-modal').classList.remove('hidden');
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detail-modal').classList.add('hidden');
+        }
+
+        function exportLogs() {
+            const csvContent = [
+                ['Timestamp', 'License Plate', 'Student/Staff ID', 'Vehicle Owner', 'Access Status'],
+                ...filteredLogs.map(log => [
+                    log.timestamp,
+                    log.plate,
+                    log.studentId,
+                    log.owner,
+                    log.status
+                ])
+            ].map(row => row.join(',')).join('\n');
+
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `access_logs_${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            renderTable();
+        });
+    </script>
+<script id="dhws-dataInjector" src="../public/dhws-data-injector.js"></script>
+</body>
+</html>

@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Security Dashboard - Campus Access Control</title>
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<script type="module" src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fcampusacc6596back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.8"></script>
+</head>
+<body class="bg-background min-h-screen">
+    <!-- Navigation Header -->
+    <nav class="bg-surface shadow-institutional border-b border-secondary-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo and Brand -->
+                <div class="flex items-center space-x-3">
+                    <div class="flex-shrink-0">
+                        <svg class="h-8 w-8 text-primary" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-10-5z"/>
+                            <path d="M10 17l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" fill="white"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-semibold text-text-primary">Campus Access Control</h1>
+                        <p class="text-sm text-text-secondary">Security Dashboard</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Links -->
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="gate_access_verification.html" class="text-text-secondary hover:text-text-primary px-3 py-2 rounded-md text-sm font-medium transition-smooth">
+                            Gate Access
+                        </a>
+                        <a href="access_logs_monitor.html" class="text-text-secondary hover:text-text-primary px-3 py-2 rounded-md text-sm font-medium transition-smooth">
+                            Access Logs
+                        </a>
+                        <a href="database_management.html" class="text-text-secondary hover:text-text-primary px-3 py-2 rounded-md text-sm font-medium transition-smooth">
+                            Database
+                        </a>
+                        <a href="security_dashboard.html" class="bg-primary text-white px-3 py-2 rounded-md text-sm font-medium">
+                            Dashboard
+                        </a>
+                        <a href="system_login.html" class="text-text-secondary hover:text-text-primary px-3 py-2 rounded-md text-sm font-medium transition-smooth">
+                            Logout
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button type="button" class="text-text-secondary hover:text-text-primary p-2 rounded-md" onclick="toggleMobileMenu()">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-menu" class="md:hidden hidden border-t border-secondary-200">
+            <div class="px-2 pt-2 pb-3 space-y-1 bg-surface">
+                <a href="gate_access_verification.html" class="text-text-secondary hover:text-text-primary block px-3 py-2 rounded-md text-base font-medium">
+                    Gate Access
+                </a>
+                <a href="access_logs_monitor.html" class="text-text-secondary hover:text-text-primary block px-3 py-2 rounded-md text-base font-medium">
+                    Access Logs
+                </a>
+                <a href="database_management.html" class="text-text-secondary hover:text-text-primary block px-3 py-2 rounded-md text-base font-medium">
+                    Database
+                </a>
+                <a href="security_dashboard.html" class="bg-primary text-white block px-3 py-2 rounded-md text-base font-medium">
+                    Dashboard
+                </a>
+                <a href="system_login.html" class="text-text-secondary hover:text-text-primary block px-3 py-2 rounded-md text-base font-medium">
+                    Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-text-primary">Security Dashboard</h2>
+            <p class="mt-2 text-text-secondary">Real-time campus access overview and system monitoring</p>
+        </div>
+
+        <!-- Summary Metrics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Today's Access Attempts -->
+            <div class="card">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-text-secondary">Today's Attempts</p>
+                        <p class="text-3xl font-bold text-text-primary">247</p>
+                        <p class="text-sm text-success">+12% from yesterday</p>
+                    </div>
+                    <div class="bg-primary-100 p-3 rounded-full">
+                        <svg class="h-6 w-6 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Approval Rate -->
+            <div class="card">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-text-secondary">Approval Rate</p>
+                        <p class="text-3xl font-bold text-text-primary">94.2%</p>
+                        <p class="text-sm text-success">+2.1% this week</p>
+                    </div>
+                    <div class="bg-success-100 p-3 rounded-full">
+                        <svg class="h-6 w-6 text-success" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Alerts -->
+            <div class="card">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-text-secondary">Active Alerts</p>
+                        <p class="text-3xl font-bold text-text-primary">3</p>
+                        <p class="text-sm text-warning">2 manual reviews pending</p>
+                    </div>
+                    <div class="bg-warning-100 p-3 rounded-full">
+                        <svg class="h-6 w-6 text-warning" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Status -->
+            <div class="card">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-text-secondary">System Status</p>
+                        <p class="text-3xl font-bold text-success">Online</p>
+                        <p class="text-sm text-text-secondary">All systems operational</p>
+                    </div>
+                    <div class="bg-success-100 p-3 rounded-full">
+                        <div class="h-6 w-6 bg-success rounded-full animate-pulse"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Recent Activity Feed -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Quick Action Buttons -->
+                <div class="card">
+                    <h3 class="text-lg font-semibold text-text-primary mb-4">Quick Actions</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <a href="gate_access_verification.html" class="btn-primary text-center py-4 flex flex-col items-center space-y-2">
+                            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <span>Gate Verification</span>
+                        </a>
+                        <a href="access_logs_monitor.html" class="btn-secondary text-center py-4 flex flex-col items-center space-y-2">
+                            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
+                                <path fill-rule="evenodd" d="M4 5a2 2 0 012-2v1a1 1 0 001 1h6a1 1 0 001-1V3a2 2 0 012 2v6a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/>
+                            </svg>
+                            <span>Access Logs</span>
+                        </a>
+                        <a href="database_management.html" class="btn-accent text-center py-4 flex flex-col items-center space-y-2">
+                            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+                            </svg>
+                            <span>Database</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="card">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-text-primary">Recent Activity</h3>
+                        <button class="text-primary hover:text-primary-700 text-sm font-medium" onclick="refreshActivity()">
+                            <svg class="inline-block w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"/>
+                            </svg>
+                            Refresh
+                        </button>
+                    </div>
+                    <div id="activity-feed" class="space-y-4">
+                        <!-- Activity Item 1 -->
+                        <div class="flex items-center space-x-4 p-3 bg-secondary-50 rounded-lg">
+                            <div class="flex-shrink-0">
+                                <div class="w-10 h-10 bg-success-100 rounded-full flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-success" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-text-primary">Access Granted</p>
+                                <p class="text-sm text-text-secondary">License Plate: <span class="font-data">ABC-1234</span> • John Smith</p>
+                                <p class="text-xs text-text-secondary">2 minutes ago</p>
+                            </div>
+                            <div class="flex-shrink-0">
+                                <span class="status-success">GRANTED</span>
+                            </div>
+                        </div>
+
+                        <!-- Activity Item 2 -->
+                        <div class="flex items-center space-x-4 p-3 bg-secondary-50 rounded-lg">
+                            <div class="flex-shrink-0">
+                                <div class="w-10 h-10 bg-error-100 rounded-full flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-error" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-text-primary">Access Denied</p>
+                                <p class="text-sm text-text-secondary">License Plate: <span class="font-data">XYZ-9999</span> • Unregistered Vehicle</p>
+                                <p class="text-xs text-text-secondary">5 minutes ago</p>
+                            </div>
+                            <div class="flex-shrink-0">
+                                <span class="status-error">DENIED</span>
+                            </div>
+                        </div>
+
+                        <!-- Activity Item 3 -->
+                        <div class="flex items-center space-x-4 p-3 bg-secondary-50 rounded-lg">
+                            <div class="flex-shrink-0">
+                                <div class="w-10 h-10 bg-warning-100 rounded-full flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-warning" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-text-primary">Manual Review Required</p>
+                                <p class="text-sm text-text-secondary">License Plate Detection Failed • Manual Override Needed</p>
+                                <p class="text-xs text-text-secondary">8 minutes ago</p>
+                            </div>
+                            <div class="flex-shrink-0">
+                                <span class="status-warning">PENDING</span>
+                            </div>
+                        </div>
+
+                        <!-- Activity Item 4 -->
+                        <div class="flex items-center space-x-4 p-3 bg-secondary-50 rounded-lg">
+                            <div class="flex-shrink-0">
+                                <div class="w-10 h-10 bg-success-100 rounded-full flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-success" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-text-primary">Access Granted</p>
+                                <p class="text-sm text-text-secondary">License Plate: <span class="font-data">DEF-5678</span> • Sarah Johnson</p>
+                                <p class="text-xs text-text-secondary">12 minutes ago</p>
+                            </div>
+                            <div class="flex-shrink-0">
+                                <span class="status-success">GRANTED</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Sidebar -->
+            <div class="space-y-6">
+                <!-- Live Statistics -->
+                <div class="card">
+                    <h3 class="text-lg font-semibold text-text-primary mb-4">Hourly Access Patterns</h3>
+                    <div class="space-y-4">
+                        <!-- Simple Bar Chart -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-text-secondary">7:00 AM</span>
+                                <span class="font-medium text-text-primary">42</span>
+                            </div>
+                            <div class="w-full bg-secondary-200 rounded-full h-2">
+                                <div class="bg-primary h-2 rounded-full" style="width: 85%"></div>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-text-secondary">8:00 AM</span>
+                                <span class="font-medium text-text-primary">38</span>
+                            </div>
+                            <div class="w-full bg-secondary-200 rounded-full h-2">
+                                <div class="bg-primary h-2 rounded-full" style="width: 76%"></div>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-text-secondary">9:00 AM</span>
+                                <span class="font-medium text-text-primary">29</span>
+                            </div>
+                            <div class="w-full bg-secondary-200 rounded-full h-2">
+                                <div class="bg-primary h-2 rounded-full" style="width: 58%"></div>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-text-secondary">10:00 AM</span>
+                                <span class="font-medium text-text-primary">15</span>
+                            </div>
+                            <div class="w-full bg-secondary-200 rounded-full h-2">
+                                <div class="bg-primary h-2 rounded-full" style="width: 30%"></div>
+                            </div>
+                        </div>
+                        <div class="pt-2 border-t border-secondary-200">
+                            <div class="flex items-center space-x-2 text-sm">
+                                <svg class="w-4 h-4 text-success" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                </svg>
+                                <span class="text-success font-medium">Peak: 7:00 AM (42 attempts)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alert Notifications -->
+                <div class="card">
+                    <h3 class="text-lg font-semibold text-text-primary mb-4">System Alerts</h3>
+                    <div class="space-y-3">
+                        <!-- High Priority Alert -->
+                        <div class="bg-error-50 border border-error-200 p-3 rounded-lg">
+                            <div class="flex items-start space-x-2">
+                                <svg class="w-5 h-5 text-error mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                </svg>
+                                <div>
+                                    <p class="text-sm font-medium text-error-700">High Priority</p>
+                                    <p class="text-sm text-error-600">2 manual reviews pending verification</p>
+                                    <p class="text-xs text-error-500 mt-1">5 minutes ago</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Medium Priority Alert -->
+                        <div class="bg-warning-50 border border-warning-200 p-3 rounded-lg">
+                            <div class="flex items-start space-x-2">
+                                <svg class="w-5 h-5 text-warning mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                                </svg>
+                                <div>
+                                    <p class="text-sm font-medium text-warning-700">Medium Priority</p>
+                                    <p class="text-sm text-warning-600">License plate detection accuracy below 90%</p>
+                                    <p class="text-xs text-warning-500 mt-1">15 minutes ago</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Low Priority Alert -->
+                        <div class="bg-secondary-50 border border-secondary-200 p-3 rounded-lg">
+                            <div class="flex items-start space-x-2">
+                                <svg class="w-5 h-5 text-secondary-500 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                                </svg>
+                                <div>
+                                    <p class="text-sm font-medium text-secondary-700">Low Priority</p>
+                                    <p class="text-sm text-secondary-600">Database backup completed successfully</p>
+                                    <p class="text-xs text-secondary-500 mt-1">1 hour ago</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Information -->
+                <div class="card">
+                    <h3 class="text-lg font-semibold text-text-primary mb-4">System Information</h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-text-secondary">Last Update</span>
+                            <span class="text-sm font-medium text-text-primary">10/03/2025 7:40 PM</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-text-secondary">Database Status</span>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-2 h-2 bg-success rounded-full"></div>
+                                <span class="text-sm font-medium text-success">Connected</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-text-secondary">Active Sessions</span>
+                            <span class="text-sm font-medium text-text-primary">3</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-text-secondary">Server Load</span>
+                            <span class="text-sm font-medium text-success">Normal</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- JavaScript -->
+    <script>
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        function refreshActivity() {
+            const activityFeed = document.getElementById('activity-feed');
+            
+            // Add loading state
+            activityFeed.innerHTML = `
+                <div class="flex items-center justify-center py-8">
+                    <div class="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
+                    <span class="ml-3 text-text-secondary">Refreshing activity...</span>
+                </div>
+            `;
+
+            // Simulate API call delay
+            setTimeout(() => {
+                // Mock new activity data
+                const newActivities = [
+                    {
+                        type: 'granted',
+                        plate: 'GHI-7890',
+                        owner: 'Mike Wilson',
+                        time: 'Just now',
+                        status: 'GRANTED'
+                    },
+                    {
+                        type: 'granted',
+                        plate: 'ABC-1234',
+                        owner: 'John Smith',
+                        time: '2 minutes ago',
+                        status: 'GRANTED'
+                    },
+                    {
+                        type: 'denied',
+                        plate: 'XYZ-9999',
+                        owner: 'Unregistered Vehicle',
+                        time: '5 minutes ago',
+                        status: 'DENIED'
+                    },
+                    {
+                        type: 'warning',
+                        plate: 'Detection Failed',
+                        owner: 'Manual Override Needed',
+                        time: '8 minutes ago',
+                        status: 'PENDING'
+                    }
+                ];
+
+                let activityHTML = '';
+                newActivities.forEach(activity => {
+                    const iconClass = activity.type === 'granted' ? 'success' : 
+                                    activity.type === 'denied' ? 'error' : 'warning';
+                    const bgClass = activity.type === 'granted' ? 'success-100' : 
+                                   activity.type === 'denied' ? 'error-100' : 'warning-100';
+                    const icon = activity.type === 'granted' ? 
+                        '<path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>' :
+                        activity.type === 'denied' ?
+                        '<path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>' :
+                        '<path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>';
+
+                    activityHTML += `
+                        <div class="flex items-center space-x-4 p-3 bg-secondary-50 rounded-lg">
+                            <div class="flex-shrink-0">
+                                <div class="w-10 h-10 bg-${bgClass} rounded-full flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-${iconClass}" fill="currentColor" viewBox="0 0 20 20">
+                                        ${icon}
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-text-primary">${activity.type === 'granted' ? 'Access Granted' : activity.type === 'denied' ? 'Access Denied' : 'Manual Review Required'}</p>
+                                <p class="text-sm text-text-secondary">License Plate: <span class="font-data">${activity.plate}</span> • ${activity.owner}</p>
+                                <p class="text-xs text-text-secondary">${activity.time}</p>
+                            </div>
+                            <div class="flex-shrink-0">
+                                <span class="status-${iconClass}">${activity.status}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                activityFeed.innerHTML = activityHTML;
+            }, 1500);
+        }
+
+        // Auto-refresh activity every 30 seconds
+        setInterval(() => {
+            // In a real application, this would fetch new data from the server
+            console.log('Auto-refreshing activity feed...');
+        }, 30000);
+
+        // Update current time display
+        function updateCurrentTime() {
+            const now = new Date();
+            const timeString = now.toLocaleString('en-US', {
+                month: '2-digit',
+                day: '2-digit',
+                year: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
+            });
+            
+            // Update any time displays on the page
+            const timeElements = document.querySelectorAll('[data-current-time]');
+            timeElements.forEach(element => {
+                element.textContent = timeString;
+            });
+        }
+
+        // Update time every minute
+        updateCurrentTime();
+        setInterval(updateCurrentTime, 60000);
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Security Dashboard initialized');
+            
+            // Simulate real-time updates
+            setTimeout(() => {
+                // Update metrics with slight variations
+                const attempts = document.querySelector('.card:first-child .text-3xl');
+                if (attempts) {
+                    const currentValue = parseInt(attempts.textContent);
+                    attempts.textContent = currentValue + Math.floor(Math.random() * 3);
+                }
+            }, 10000);
+        });
+    </script>
+<script id="dhws-dataInjector" src="../public/dhws-data-injector.js"></script>
+</body>
+</html>
