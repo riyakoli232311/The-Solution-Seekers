@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ID Card Scan Point</title>
+    <link rel="stylesheet" href="scanner.css">
+</head>
+<body>
+    <div class="scanner-container">
+        <h1>🆔 ID Card Scan Point</h1>
+        
+        <div class="camera-feed-area">
+            <div id="camera-window">
+                <p>Align QR/Barcode with the center line</p>
+                <div class="scan-line"></div>
+                <div class="overlay-text">SCANNING...</div>
+            </div>
+            <p class="instruction-text">Scanning initiated. Please hold the ID card steady.</p>
+        </div>
+
+        <div id="status-display" class="status pending">
+            <p>Awaiting Scan Data...</p>
+        </div>
+
+        <div class="verification-details">
+            <h2>Verification Data</h2>
+            <p><strong>Captured ID:</strong> <span id="captured-id">N/A</span></p>
+            <p><strong>Plate Match:</strong> <span id="plate-match">Pending</span></p>
+            <p><strong>Result:</strong> <span id="final-result">Processing...</span></p>
+        </div>
+        
+        <button class="manual-override-btn">Manual Override / Report</button>
+
+        <footer>
+            <p>System G-S01 | Logged in as: Security Guard 101</p>
+        </footer>
+    </div>
+
+    <script>
+        // Simulate a successful scan after 3 seconds
+        setTimeout(() => {
+            const statusDiv = document.getElementById('status-display');
+            const capturedIdSpan = document.getElementById('captured-id');
+            const plateMatchSpan = document.getElementById('plate-match');
+            const finalResultSpan = document.getElementById('final-result');
+
+            // 1. Scan success (ID decoded)
+            capturedIdSpan.textContent = 'STU12345 (John Doe)';
+            statusDiv.innerHTML = '<p>✅ ID Card Read Successfully!</p>';
+            statusDiv.classList.remove('pending');
+            statusDiv.classList.add('reading');
+            
+            // 2. Simulate database check and vehicle plate match after another 3 seconds
+            setTimeout(() => {
+                plateMatchSpan.textContent = 'MH 12 AB 3456 (MATCH)';
+                finalResultSpan.innerHTML = '<span class="granted-text">ACCESS GRANTED</span>';
+                
+                statusDiv.classList.remove('reading');
+                statusDiv.classList.add('granted');
+                statusDiv.innerHTML = '<h2>GATE ACCESS GRANTED!</h2><p>Barrier Opening...</p>';
+            }, 3000);
+            
+        }, 3000);
+
+        // To simulate a DENIED access, you would use:
+        /*
+        setTimeout(() => {
+            finalResultSpan.innerHTML = '<span class="denied-text">ACCESS DENIED</span>';
+            statusDiv.classList.remove('reading');
+            statusDiv.classList.add('denied');
+            statusDiv.innerHTML = '<h2>ACCESS DENIED!</h2><p>ID is expired or not registered.</p>';
+        }, 6000); 
+        */
+    </script>
+</body>
+</html>

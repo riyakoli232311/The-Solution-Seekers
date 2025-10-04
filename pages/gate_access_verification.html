@@ -6,6 +6,8 @@
     <title>Gate Access Verification - Campus Access Control</title>
     <link rel="stylesheet" href="../css/main.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.1.1/dist/tesseract.min.js"></script>
+
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <script type="module" src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fcampusacc6596back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.8"></script>
 </head>
@@ -250,207 +252,361 @@
     </main>
 
     <!-- JavaScript -->
-    <script>
-        // Mock database for demonstration
-        const mockDatabase = {
-            'ABC-1234': { owner: 'John Smith', id: 'STU2024001', status: 'active' },
-            'XYZ-5678': { owner: 'Sarah Johnson', id: 'STF2024001', status: 'active' },
-            'DEF-9012': { owner: 'Mike Wilson', id: 'STU2024002', status: 'suspended' },
-            'GHI-3456': { owner: 'Emily Davis', id: 'STF2024002', status: 'active' }
-        };
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.1.1/dist/tesseract.min.js"></script>
+<script>
+/* ---------- Mock DB (unchanged) ---------- */
+const mockDatabase = {
+  'ABC-1234': { owner: 'John Smith', id: 'STU2024001', status: 'active' },
+  'XYZ-5678': { owner: 'Sarah Johnson', id: 'STF2024001', status: 'active' },
+  'DEF-9012': { owner: 'Mike Wilson', id: 'STU2024002', status: 'suspended' },
+  'GHI-3456': { owner: 'Emily Davis', id: 'STF2024002', status: 'active' }
+};
 
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
+/* ---------- Globals ---------- */
+let lastDetectedPlateCandidate = ''; // best plate string to use for verification (e.g. "ABC-1234" or "ABC1234")
+let lastOCRRaw = ''; // raw OCR raw text
+
+/* ---------- Dynamic Tesseract loader (safe) ---------- */
+function loadTesseract() {
+  if (window.Tesseract) return Promise.resolve(window.Tesseract);
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@4.1.1/dist/tesseract.min.js';
+    s.onload = () => resolve(window.Tesseract);
+    s.onerror = () => reject(new Error('Failed to load Tesseract.js'));
+    document.head.appendChild(s);
+  });
+}
+
+/* ---------- Utility helpers ---------- */
+function normalizeForCompare(str) {
+  return (str || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+}
+function normalizeId(str) {
+  return (str || '').toUpperCase().replace(/\s+/g, '');
+}
+function tryInsertDash(candidate) {
+  // common pattern: 3 letters + 4 digits => ABC1234 -> ABC-1234
+  if (!candidate) return null;
+  const s = candidate.toUpperCase().replace(/[^A-Z0-9]/g, '');
+  const m = s.match(/^([A-Z]{2,3})(\d{3,4})$/);
+  if (m) return `${m[1]}-${m[2]}`;
+  return null;
+}
+function findMatchingKeyByNormalized(normStr) {
+  for (const key in mockDatabase) {
+    if (normalizeForCompare(key) === normStr) return key;
+  }
+  return null;
+}
+
+/* ---------- UI helper ---------- */
+function showProcessingUI(show) {
+  const status = document.getElementById('status-card');
+  const processing = document.getElementById('upload-processing');
+  if (show) {
+    if (status) status.classList.remove('hidden');
+    if (processing) processing.classList.remove('hidden');
+  } else {
+    if (status) status.classList.add('hidden');
+    if (processing) processing.classList.add('hidden');
+  }
+}
+
+/* ---------- Main OCR worker (dataURL or File) ---------- */
+async function recognizePlateFromDataURL(dataUrl) {
+  await loadTesseract();
+  const { data } = await Tesseract.recognize(dataUrl, 'eng', { logger: m => console.log(m) });
+  let text = (data && data.text) ? data.text.toUpperCase() : '';
+  lastOCRRaw = text;
+  // remove multiple whitespace
+  text = text.replace(/\s+/g, ' ');
+  // collect candidate groups (alphanumeric + optional dashes)
+  const matches = text.match(/[A-Z0-9\-]{4,12}/g);
+  let candidate = (matches && matches.length) ? matches[0] : text.replace(/[^A-Z0-9\-]/g, '');
+  candidate = (candidate || '').replace(/^-+|-+$/g, '');
+  return candidate;
+}
+async function recognizePlateFromFile(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const dataUrl = e.target.result;
+        const candidate = await recognizePlateFromDataURL(dataUrl);
+        resolve(candidate);
+      } catch (err) {
+        reject(err);
+      }
+    };
+    reader.onerror = (err) => reject(err);
+    reader.readAsDataURL(file);
+  });
+}
+
+/* ---------- File upload handler (runs OCR automatically) ---------- */
+async function handleFileUpload(event) {
+  const file = event.target.files ? event.target.files[0] : null;
+  if (!file) return;
+
+  // validation
+  const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+  if (!validTypes.includes(file.type)) {
+    alert('Please upload a valid image file (JPG, PNG, WEBP)');
+    return;
+  }
+  if (file.size > 10 * 1024 * 1024) {
+    alert('File size must be less than 10MB');
+    return;
+  }
+
+  // show preview
+  const reader = new FileReader();
+  reader.onload = async function (e) {
+    const dataUrl = e.target.result;
+    document.getElementById('preview-image').src = dataUrl;
+    document.getElementById('upload-content').classList.add('hidden');
+    document.getElementById('upload-preview').classList.remove('hidden');
+    checkFormValidity();
+
+    // run OCR
+    try {
+      showProcessingUI(true);
+      document.getElementById('results-card').classList.add('hidden');
+      document.getElementById('details-card').classList.add('hidden');
+      document.getElementById('override-card').classList.add('hidden');
+
+      const rawCandidate = await recognizePlateFromDataURL(dataUrl);
+      // best effort normalization + DB matching
+      const cleaned = (rawCandidate || '').toUpperCase().replace(/[^A-Z0-9\-]/g, '');
+      // try direct DB match (normalized)
+      let matchedKey = findMatchingKeyByNormalized(normalizeForCompare(cleaned));
+      if (!matchedKey) {
+        // try adding dash (ABC1234 -> ABC-1234) and match
+        const withDash = tryInsertDash(cleaned);
+        if (withDash) matchedKey = findMatchingKeyByNormalized(normalizeForCompare(withDash));
+      }
+      // store best candidate for later verification
+      lastDetectedPlateCandidate = matchedKey || (tryInsertDash(cleaned) || cleaned || '');
+      // put detected plate into manual field (helpful)
+      const manualFld = document.getElementById('manual-plate');
+      if (manualFld) manualFld.value = lastDetectedPlateCandidate;
+
+      showProcessingUI(false);
+
+      // if ID already valid, auto-run verification; otherwise wait for user to click Verify
+      const idValid = !document.getElementById('id-validation').classList.contains('hidden');
+      if (idValid) {
+        // small delay so user sees processing spinner briefly
+        setTimeout(() => showVerificationResults(lastDetectedPlateCandidate), 250);
+      } else {
+        // keep results hidden; show override so user can edit if OCR wrong
+        // but don't automatically open override - user can correct manually
+      }
+    } catch (err) {
+      console.error('OCR error:', err);
+      showProcessingUI(false);
+      // show manual override
+      document.getElementById('override-card').classList.remove('hidden');
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ---------- Verify button action ---------- */
+function processVerification() {
+  // show processing UI
+  showProcessingUI(true);
+  document.getElementById('results-card').classList.add('hidden');
+  document.getElementById('details-card').classList.add('hidden');
+  document.getElementById('override-card').classList.add('hidden');
+
+  // prefer lastDetectedPlateCandidate; if absent try to OCR the uploaded file synchronously
+  const fileInput = document.getElementById('file-input');
+  const file = fileInput && fileInput.files && fileInput.files[0];
+
+  (async () => {
+    try {
+      if (!lastDetectedPlateCandidate && file) {
+        // re-run OCR if we don't have a candidate
+        const candidate = await recognizePlateFromFile(file);
+        const cleaned = (candidate || '').toUpperCase().replace(/[^A-Z0-9\-]/g, '');
+        let matchedKey = findMatchingKeyByNormalized(normalizeForCompare(cleaned));
+        if (!matchedKey) {
+          const withDash = tryInsertDash(cleaned);
+          if (withDash) matchedKey = findMatchingKeyByNormalized(normalizeForCompare(withDash));
         }
+        lastDetectedPlateCandidate = matchedKey || (tryInsertDash(cleaned) || cleaned || '');
+        const manualFld = document.getElementById('manual-plate'); if (manualFld) manualFld.value = lastDetectedPlateCandidate;
+      }
 
-        function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+      if (!lastDetectedPlateCandidate) {
+        // no plate could be detected
+        showProcessingUI(false);
+        document.getElementById('override-card').classList.remove('hidden');
+        return;
+      }
 
-            // Validate file type and size
-            const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-            if (!validTypes.includes(file.type)) {
-                alert('Please upload a valid image file (JPG, PNG, WEBP)');
-                return;
-            }
+      // brief pause so UI updates
+      setTimeout(() => {
+        showVerificationResults(lastDetectedPlateCandidate);
+      }, 300);
 
-            if (file.size > 10 * 1024 * 1024) {
-                alert('File size must be less than 10MB');
-                return;
-            }
+    } catch (err) {
+      console.error(err);
+      showProcessingUI(false);
+      document.getElementById('override-card').classList.remove('hidden');
+    }
+  })();
+}
 
-            // Show preview
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById('preview-image').src = e.target.result;
-                document.getElementById('upload-content').classList.add('hidden');
-                document.getElementById('upload-preview').classList.remove('hidden');
-                checkFormValidity();
-            };
-            reader.readAsDataURL(file);
-        }
+/* ---------- Show results & check ID match ---------- */
+function showVerificationResults(plateCandidate) {
+  const enteredIdRaw = document.getElementById('student-id').value || '';
+  const enteredId = normalizeId(enteredIdRaw);
 
-        function validateIdFormat(input) {
-            const value = input.value.toUpperCase();
-            input.value = value;
-            
-            const pattern = /^(STU|STF)\d{7}$/;
-            const validation = document.getElementById('id-validation');
-            
-            if (pattern.test(value)) {
-                validation.classList.remove('hidden');
-                input.classList.remove('border-error-500');
-                input.classList.add('border-success-500');
-            } else {
-                validation.classList.add('hidden');
-                input.classList.remove('border-success-500');
-                if (value.length > 0) {
-                    input.classList.add('border-error-500');
-                }
-            }
-            
-            checkFormValidity();
-        }
+  // Best effort: compare against DB keys by normalized form
+  const normalizedCandidate = normalizeForCompare(plateCandidate || '');
+  let matchedKey = findMatchingKeyByNormalized(normalizedCandidate);
 
-        function checkFormValidity() {
-            const hasImage = !document.getElementById('upload-preview').classList.contains('hidden');
-            const hasValidId = !document.getElementById('id-validation').classList.contains('hidden');
-            const verifyBtn = document.getElementById('verify-btn');
-            
-            verifyBtn.disabled = !(hasImage && hasValidId);
-        }
+  // If nothing matched exactly, also try inserting dash (ABC1234 -> ABC-1234)
+  if (!matchedKey) {
+    const withDash = tryInsertDash(plateCandidate || '');
+    if (withDash) matchedKey = findMatchingKeyByNormalized(normalizeForCompare(withDash));
+  }
 
-        function processVerification() {
-            // Show processing status
-            document.getElementById('status-card').classList.remove('hidden');
-            document.getElementById('results-card').classList.add('hidden');
-            document.getElementById('details-card').classList.add('hidden');
-            document.getElementById('override-card').classList.add('hidden');
+  const vehicleData = matchedKey ? mockDatabase[matchedKey] : null;
+  const now = new Date().toLocaleString('en-US', {
+    month: '2-digit', day: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true
+  });
 
-            // Simulate processing delay
-            setTimeout(() => {
-                // Mock license plate detection (80% success rate)
-                const detectionSuccess = Math.random() > 0.2;
-                
-                if (detectionSuccess) {
-                    // Simulate detected plate
-                    const plates = Object.keys(mockDatabase);
-                    const detectedPlate = plates[Math.floor(Math.random() * plates.length)];
-                    showVerificationResults(detectedPlate);
-                } else {
-                    // Show manual override
-                    document.getElementById('status-card').classList.add('hidden');
-                    document.getElementById('override-card').classList.remove('hidden');
-                }
-            }, 3000);
-        }
+  // Hide processing
+  showProcessingUI(false);
 
-        function showVerificationResults(plateNumber) {
-            const vehicleData = mockDatabase[plateNumber];
-            const currentTime = new Date().toLocaleString('en-US', {
-                month: '2-digit',
-                day: '2-digit',
-                year: 'numeric',
-                hour: 'numeric',
-                minute: '2-digit',
-                hour12: true
-            });
+  // Show results panel
+  document.getElementById('results-card').classList.remove('hidden');
+  document.getElementById('details-card').classList.remove('hidden');
 
-            // Hide status card
-            document.getElementById('status-card').classList.add('hidden');
+  // Update details (use matchedKey for display if available)
+  document.getElementById('detected-plate').textContent = matchedKey || (plateCandidate || 'UNKNOWN');
+  document.getElementById('vehicle-owner').textContent = vehicleData ? vehicleData.owner : 'Unknown';
+  document.getElementById('owner-id').textContent = vehicleData ? vehicleData.id : 'N/A';
+  document.getElementById('verification-time').textContent = now;
 
-            // Show results
-            document.getElementById('results-card').classList.remove('hidden');
-            document.getElementById('details-card').classList.remove('hidden');
+  // Determine authorization: must exist, be active, and entered ID must match record exactly (case-insensitive)
+  const idMatches = vehicleData ? normalizeId(vehicleData.id) === enteredId : false;
+  const isActive = vehicleData ? vehicleData.status === 'active' : false;
+  const isAuthorized = vehicleData && isActive && idMatches;
 
-            // Update details
-            document.getElementById('detected-plate').textContent = plateNumber;
-            document.getElementById('vehicle-owner').textContent = vehicleData.owner;
-            document.getElementById('owner-id').textContent = vehicleData.id;
-            document.getElementById('verification-time').textContent = currentTime;
+  if (isAuthorized) {
+    document.getElementById('access-granted').classList.remove('hidden');
+    document.getElementById('access-denied').classList.add('hidden');
+  } else {
+    document.getElementById('access-granted').classList.add('hidden');
+    document.getElementById('access-denied').classList.remove('hidden');
+  }
 
-            // Show access decision
-            if (vehicleData.status === 'active') {
-                document.getElementById('access-granted').classList.remove('hidden');
-                document.getElementById('access-denied').classList.add('hidden');
-            } else {
-                document.getElementById('access-granted').classList.add('hidden');
-                document.getElementById('access-denied').classList.remove('hidden');
-            }
+  // Log attempt
+  console.log('Access attempt logged:', {
+    timestamp: now,
+    plateDetected: matchedKey || plateCandidate,
+    studentIdEntered: enteredIdRaw,
+    matchedRecordId: vehicleData ? vehicleData.id : null,
+    status: isAuthorized ? 'GRANTED' : 'DENIED'
+  });
+}
 
-            // Log the access attempt (in real app, this would be sent to server)
-            console.log('Access attempt logged:', {
-                timestamp: currentTime,
-                plateNumber: plateNumber,
-                studentId: document.getElementById('student-id').value,
-                status: vehicleData.status === 'active' ? 'GRANTED' : 'DENIED'
-            });
-        }
+/* ---------- Manual override submit ---------- */
+function submitManualOverride() {
+  const manualPlateInput = document.getElementById('manual-plate').value || '';
+  const manual = manualPlateInput.trim().toUpperCase();
+  if (!manual) {
+    alert('Please enter a license plate number');
+    return;
+  }
+  // set as last detected and proceed
+  lastDetectedPlateCandidate = manual;
+  document.getElementById('override-card').classList.add('hidden');
+  document.getElementById('status-card').classList.remove('hidden');
+  setTimeout(() => {
+    showVerificationResults(lastDetectedPlateCandidate);
+  }, 600);
+}
 
-        function submitManualOverride() {
-            const manualPlate = document.getElementById('manual-plate').value.toUpperCase();
-            if (!manualPlate) {
-                alert('Please enter a license plate number');
-                return;
-            }
+/* ---------- ID format validation (unchanged behavior) ---------- */
+function validateIdFormat(input) {
+  const value = input.value.toUpperCase();
+  input.value = value;
 
-            document.getElementById('override-card').classList.add('hidden');
-            document.getElementById('status-card').classList.remove('hidden');
+  const pattern = /^(STU|STF)\d{7}$/;
+  const validation = document.getElementById('id-validation');
 
-            setTimeout(() => {
-                showVerificationResults(manualPlate);
-            }, 2000);
-        }
+  if (pattern.test(value)) {
+    validation.classList.remove('hidden');
+    input.classList.remove('border-error-500');
+    input.classList.add('border-success-500');
+  } else {
+    validation.classList.add('hidden');
+    input.classList.remove('border-success-500');
+    if (value.length > 0) input.classList.add('border-error-500');
+  }
 
-        function clearForm() {
-            // Reset file input
-            document.getElementById('file-input').value = '';
-            document.getElementById('upload-content').classList.remove('hidden');
-            document.getElementById('upload-preview').classList.add('hidden');
-            
-            // Reset ID input
-            document.getElementById('student-id').value = '';
-            document.getElementById('id-validation').classList.add('hidden');
-            document.getElementById('student-id').classList.remove('border-success-500', 'border-error-500');
-            
-            // Reset manual override
-            document.getElementById('manual-plate').value = '';
-            
-            // Hide all result cards
-            document.getElementById('status-card').classList.add('hidden');
-            document.getElementById('results-card').classList.add('hidden');
-            document.getElementById('details-card').classList.add('hidden');
-            document.getElementById('override-card').classList.add('hidden');
-            
-            // Disable verify button
-            document.getElementById('verify-btn').disabled = true;
-        }
+  checkFormValidity();
+}
 
-        // Drag and drop functionality
-        const uploadZone = document.getElementById('upload-zone');
+/* ---------- Form validity & clearing ---------- */
+function checkFormValidity() {
+  const hasImage = !document.getElementById('upload-preview').classList.contains('hidden');
+  const hasValidId = !document.getElementById('id-validation').classList.contains('hidden');
+  document.getElementById('verify-btn').disabled = !(hasImage && hasValidId);
+}
 
-        uploadZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadZone.classList.add('border-primary', 'bg-primary-50');
-        });
+function clearForm() {
+  document.getElementById('file-input').value = '';
+  document.getElementById('upload-content').classList.remove('hidden');
+  document.getElementById('upload-preview').classList.add('hidden');
 
-        uploadZone.addEventListener('dragleave', (e) => {
-            e.preventDefault();
-            uploadZone.classList.remove('border-primary', 'bg-primary-50');
-        });
+  document.getElementById('student-id').value = '';
+  document.getElementById('id-validation').classList.add('hidden');
+  document.getElementById('student-id').classList.remove('border-success-500', 'border-error-500');
 
-        uploadZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadZone.classList.remove('border-primary', 'bg-primary-50');
-            
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                document.getElementById('file-input').files = files;
-                handleFileUpload({ target: { files: files } });
-            }
-        });
-    </script>
+  document.getElementById('manual-plate').value = '';
+
+  document.getElementById('status-card').classList.add('hidden');
+  document.getElementById('results-card').classList.add('hidden');
+  document.getElementById('details-card').classList.add('hidden');
+  document.getElementById('override-card').classList.add('hidden');
+
+  document.getElementById('verify-btn').disabled = true;
+  lastDetectedPlateCandidate = '';
+  lastOCRRaw = '';
+}
+
+/* ---------- Mobile menu ---------- */
+function toggleMobileMenu() {
+  const menu = document.getElementById('mobile-menu');
+  menu.classList.toggle('hidden');
+}
+
+/* ---------- Drag & drop ---------- */
+(function attachDragDrop() {
+  const uploadZone = document.getElementById('upload-zone');
+  if (!uploadZone) return;
+  uploadZone.addEventListener('dragover', (e) => { e.preventDefault(); uploadZone.classList.add('border-primary', 'bg-primary-50'); });
+  uploadZone.addEventListener('dragleave', (e) => { e.preventDefault(); uploadZone.classList.remove('border-primary', 'bg-primary-50'); });
+  uploadZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadZone.classList.remove('border-primary', 'bg-primary-50');
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      document.getElementById('file-input').files = files;
+      handleFileUpload({ target: { files } });
+    }
+  });
+})();
+</script>
+
+
 <script id="dhws-dataInjector" src="../public/dhws-data-injector.js"></script>
 </body>
 </html>
